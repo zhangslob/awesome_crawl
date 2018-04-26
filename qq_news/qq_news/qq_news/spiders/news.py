@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import re
 import scrapy
 
 
@@ -9,6 +11,13 @@ class ExampleSpider(scrapy.Spider):
 
     recommend_url = 'https://pacaio.match.qq.com/xw/relate?num=6&id=20180425A0VYZO&callback=__jp1'  # 推荐新闻
     # https://pacaio.match.qq.com/irs/rcd?cid=35&token=4d1ddbd5ea23e1ec0cdd44a6ebe8dec6&num=20&page=2&expIds=20180425A1EV59%7C20180425A1811E%7Ci0637cpjxs7%7C20180425A17Q4M%7C20180425A16TS3%7C20180425A16CVB%7C20180425A169J3%7C20180425A15JYI%7C20180425A14YTW%7C20180425A13VV0%7Co0564gbiu9b%7Cq0637sx6bch%7C20180425A0YCYE%7C20180425A0UNVM%7C20180425A0PLBZ%7C20180425A19G4O%7C20180425A1RKMV%7Cr0637ypfft7%7C20180425A0ZM3B%7C20180425A1ODQV&callback=__jp3
+
+    custom_settings = {
+        'CONCURRENT_REQUESTS': 64,
+        'DOWNLOAD_DELAY': 0,
+        'COOKIES_ENABLED': False,
+
+    }
 
     def parse(self, response):
         """
@@ -29,4 +38,15 @@ class ExampleSpider(scrapy.Spider):
         :param response: http://news.qq.com/
         :return:
         """
+        pat = re.compile('http://new.qq.com/.*/.*.html')
+        detail_urls = pat.findall(response.text)
+        for url in detail_urls:
+            yield scrapy.Request(url, callback=self.parse_content, headers={'ua': 'mbua'})  # TODO FIX IT
 
+    def parse_content(self, response):
+        """
+        采集详情页数据，从移动端采集会比较简单
+        :param response: 
+        :return: 
+        """
+        pass
