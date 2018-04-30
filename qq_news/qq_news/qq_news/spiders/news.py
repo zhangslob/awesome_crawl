@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-import json
+import demjson
 import scrapy
 
 
@@ -10,6 +10,7 @@ class ExampleSpider(scrapy.Spider):
     name = 'qq'
     allowed_domains = ['qq.com']
     start_urls = ['http://www.qq.com/map/']
+    default_value = '暂无数据'
 
     mobile_url = 'https://xw.qq.com/cmsid/{}'
     recommend_url = 'https://pacaio.match.qq.com/xw/relate?num=6&id=20180425A0VYZO&callback=__jp1'  # 推荐新闻
@@ -25,6 +26,11 @@ class ExampleSpider(scrapy.Spider):
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'cache-control': 'max-age=0',
+        },
+        'MONGO_URI': 'localhost:27017',
+        'MONGO_DATABASE': 'awesome_crawl',
+        'ITEM_PIPELINES': {
+            'qq_news.pipelines.MongoPipeline': 301,
         }
     }
 
@@ -60,13 +66,13 @@ class ExampleSpider(scrapy.Spider):
         :param response: https://xw.qq.com/cmsid/20180426A0XFTS
         :return: 
         """
-        try:   # TODO FIX IT
+        try:
             data = ''.join(re.findall(r'globalConfig\s=\s(\{.*?\});', response.text, re.S))
-            title = ''.join(re.findall('title:\s(.*?),', data))
-            articleid = ''.join(re.findall('articleid:\s(.*?),', data))
-            channel = ''.join(re.findall('channel:\s(.*?),', data))
-            cid = ''.join(re.findall('cid:\s(.*?),', data))
-            commentNumber = ''.join(re.findall('title:\s(.*?),', data))
-            pass
+            json_data = demjson.decode(data)
+
+            article_data = dict()
+            for k, v in zip(list(json_data.keys()), list(json_data.values())):
+                article_data[k] = v
+            yield article_data
         except Exception as e:
-            self.logger.error('parse_content {}, {}, {}'.format(e, response.url, response.text))
+            self.logger.error('parse_content error {}, {}, {}'.format(e, response.url, response.text))
