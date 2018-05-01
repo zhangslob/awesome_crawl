@@ -2,4 +2,5 @@
 # -*- coding: utf-8 -*-
 
 from scrapy.cmdline import execute
-execute('scrapy crawl qq'.split())
+# execute('scrapy crawl qq_list'.split())
+execute('scrapy crawl qq_detail'.split())

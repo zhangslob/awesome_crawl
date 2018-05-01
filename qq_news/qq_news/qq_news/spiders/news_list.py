@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import re
-import demjson
 import scrapy
+import demjson
+from ..items import NewsUrlItem
 
 
-class ExampleSpider(scrapy.Spider):
-    name = 'qq'
+class ListSpider(scrapy.Spider):
+    name = 'qq_list'
     allowed_domains = ['qq.com']
     start_urls = ['http://www.qq.com/map/']
     default_value = '暂无数据'
@@ -21,17 +22,23 @@ class ExampleSpider(scrapy.Spider):
         'CONCURRENT_REQUESTS': 64,
         'DOWNLOAD_DELAY': 0,
         'COOKIES_ENABLED': False,
+        'LOG_LEVEL': 'INFO',
+        'RETRY_TIMES': 15,
         'DEFAULT_REQUEST_HEADERS': {
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'cache-control': 'max-age=0',
         },
-        'MONGO_URI': 'localhost:27017',
-        'MONGO_DATABASE': 'awesome_crawl',
+        'REDIS_HOST': '127.0.0.1',
+        'REDIS_PORT': '6379',
+        'REDIS_DB': '0',
         'ITEM_PIPELINES': {
-            'qq_news.pipelines.MongoPipeline': 301,
-        }
+            'qq_news.pipelines.RedisStartUrlsPipeline': 301,
+        },
+        'DOWNLOADER_MIDDLEWARES': {
+            # 'qq_news.middlewares.ProxyMiddleware': 543,
+        },
     }
 
     def parse(self, response):
@@ -56,23 +63,8 @@ class ExampleSpider(scrapy.Spider):
         pat = re.compile('http://new.qq.com/.*/.*.html')
         detail_urls = pat.findall(response.text)
         for url in detail_urls:
-            url_ = self.mobile_url.format(url.split('/')[-1].split('.')[0])
-            yield scrapy.Request(url_, callback=self.parse_content,
-                                 headers={'User-Agent': self.mobile_ua, 'Referer': url},)
+            item = NewsUrlItem()
+            item['url'] = url
+            yield item
 
-    def parse_content(self, response):
-        """
-        采集详情页数据，从移动端采集会比较简单
-        :param response: https://xw.qq.com/cmsid/20180426A0XFTS
-        :return: 
-        """
-        try:
-            data = ''.join(re.findall(r'globalConfig\s=\s(\{.*?\});', response.text, re.S))
-            json_data = demjson.decode(data)
 
-            article_data = dict()
-            for k, v in zip(list(json_data.keys()), list(json_data.values())):
-                article_data[k] = v
-            yield article_data
-        except Exception as e:
-            self.logger.error('parse_content error {}, {}, {}'.format(e, response.url, response.text))

@@ -54,3 +54,12 @@ class QqNewsSpiderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class ProxyMiddleware(object):
+
+    def process_request(self, request, spider):
+
+        # 换成你的代理
+        request.meta['proxy'] = 'your proxy'
+        spider.logger.debug('get ip: {}'.format(request.meta['proxy']))
