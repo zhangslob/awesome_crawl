@@ -25,6 +25,31 @@
 
 ![](https://i.imgur.com/j81d8AP.png)
 
+你可以自行添加更多爬虫去采集种子链接，如从[首页](http://www.qq.com/)进入匹配，从推荐入口：
+
+```python
+import requests
+
+url = "https://pacaio.match.qq.com/xw/recommend"
+
+querystring = {"num":"10^","callback":"__jp0"}
+
+headers = {
+    'accept-encoding': "gzip, deflate, br",
+    'accept-language': "zh-CN,zh;q=0.9,en;q=0.8",
+    'user-agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1",
+    'accept': "*/*",
+    'referer': "https://xw.qq.com/m/recommend/",
+    'authority': "pacaio.match.qq.com",
+    'cache-control': "no-cache",
+    }
+
+response = requests.request("GET", url, headers=headers, params=querystring)
+
+print(response.text)
+```
+等等，你所需要做的仅仅是把这些抓到的种子链接塞到redis里面，也就是启用`qq_news.pipelines.RedisStartUrlsPipeline`这个中间件。
+
 ## TODO
 
 1. 增加更多新闻链接的匹配，从推荐接口处获得更多种子链接
