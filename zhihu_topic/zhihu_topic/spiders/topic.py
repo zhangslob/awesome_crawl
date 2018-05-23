@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import json
 import scrapy
 
 
@@ -15,6 +16,7 @@ class TopicSpider(scrapy.Spider):
         }
 
     custom_settings = {
+        'FEED_EXPORT_ENCODING': 'utf-8',
         'CONCURRENT_REQUESTS': 64,
         'DOWNLOAD_DELAY': 0,
         # 'COOKIES_ENABLED': False,
@@ -47,12 +49,14 @@ class TopicSpider(scrapy.Spider):
         for i in response.xpath('//ul[@class="zm-topic-cat-main clearfix"]/li'):
             topic_id = ''.join(i.xpath('@data-id').extract())
             url = 'https://www.zhihu.com/node/TopicsPlazzaListV2'
+            d = {
+                "topic_id": topic_id,
+                "offset": 40,
+                "hash_id": ""}
+
             data = {
                 'method': 'next',
-                'params': {
-                    "topic_id": topic_id,
-                    "offset": 40,
-                    "hash_id": "d9d93acc34c18c6e3055a8a8bdaacb17"},
+                'params': json.dumps(d),
             }
 
             xsrf = response.xpath('/html/body/input/@value').extract_first()
@@ -70,8 +74,9 @@ class TopicSpider(scrapy.Spider):
                 'x-xsrftoken': xsrf,
                 'cache-control': "no-cache",
                 }
-            yield scrapy.FormRequest(url, method='POST', formdata=data, headers=headers,
-                                     meta={'cookiejar': response.meta['cookiejar']})
+            yield scrapy.FormRequest(url, formdata=data, headers=headers,
+                                     meta={'cookiejar': response.meta['cookiejar']},
+                                     callback=self.parse_content)
             # todo
 
     def parse_content(self, response):
