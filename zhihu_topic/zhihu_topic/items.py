@@ -11,4 +11,6 @@ import scrapy
 class ZhihuTopicItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    detail_id = scrapy.Field()
+    topic_id = scrapy.Field()
+    crawl_time = scrapy.Field()
