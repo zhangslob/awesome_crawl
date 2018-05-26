@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 import scrapy
 from ..items import ZhihuTopicItem
+# todo API: https://www.zhihu.com/api/v3/topics/19552679/parent \ https://www.zhihu.com/api/v3/topics/19552679/children
 
 
 class TopicSpider(scrapy.Spider):
@@ -18,12 +19,15 @@ class TopicSpider(scrapy.Spider):
         }
     offset = 0
 
+    mongourl = 'mongodb://127.0.0.1:27017'
+    mongodb = name
+
     custom_settings = {
         'FEED_EXPORT_ENCODING': 'utf-8',
         'CONCURRENT_REQUESTS': 64,
         'DOWNLOAD_DELAY': 0,
-        # 'COOKIES_ENABLED': False,
-        'LOG_LEVEL': 'DEBUG',
+        'COOKIES_ENABLED': False,
+        'LOG_LEVEL': 'INFO',
         'RETRY_TIMES': 15,
         'USER_AGENT': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/55.0.2883.75 Safari/537.36 Maxthon/5.1.3.2000",
@@ -37,8 +41,11 @@ class TopicSpider(scrapy.Spider):
         'REDIS_HOST': '127.0.0.1',
         'REDIS_PORT': '6379',
         'REDIS_DB': '0',
+        # 'MONGO_URL': 'mongodb://127.0.0.1:27017',
+        # 'MONGO_DB': name,
         'ITEM_PIPELINES': {
-            # 'qq_news.pipelines.RedisStartUrlsPipeline': 301,
+            'zhihu_topic.pipelines.ZhihuTopicPipeline': 301,
+            'zhihu_topic.pipelines.RedisStartUrlsPipeline': 304,
         },
         'DOWNLOADER_MIDDLEWARES': {
             # 'qq_news.middlewares.ProxyMiddleware': 543,
@@ -65,19 +72,20 @@ class TopicSpider(scrapy.Spider):
         headers = self.headers
         headers['x-xsrftoken'] = xsrf
 
-        for i in response.xpath('//ul[@class="zm-topic-cat-main clearfix"]/li'):
-            topic_id = ''.join(i.xpath('@data-id').extract())
-            url = 'https://www.zhihu.com/node/TopicsPlazzaListV2'
-            item = {"topic_id": topic_id, "offset": self.offset, "hash_id": ""}
+        while True:
+            for i in response.xpath('//ul[@class="zm-topic-cat-main clearfix"]/li'):
+                topic_id = ''.join(i.xpath('@data-id').extract())
+                url = 'https://www.zhihu.com/node/TopicsPlazzaListV2'
+                item = {"topic_id": topic_id, "offset": self.offset, "hash_id": ""}
 
-            data = {
-                'method': 'next',
-                'params': json.dumps(item),
-            }
+                data = {
+                    'method': 'next',
+                    'params': json.dumps(item),
+                }
 
-            yield scrapy.FormRequest(url, formdata=data, headers=headers,
-                                     meta={'item': item, 'xsrf': xsrf},
-                                     callback=self.parse_content)
+                yield scrapy.FormRequest(url, formdata=data, headers=headers,
+                                         meta={'item': item, 'xsrf': xsrf},
+                                         callback=self.parse_content)
 
     def parse_content(self, response):
         """
@@ -96,6 +104,15 @@ class TopicSpider(scrapy.Spider):
             xsrf = response.meta['item'].get('xsrf')
             item = {"topic_id": topic_id, "offset": self.offset, "hash_id": ""}
 
+            detail_id = re.findall('href=\"/topic/(\d+)\"', ''.join(results['msg']))
+            for id in detail_id:
+                crawl_time = datetime.utcnow()
+                item_ = ZhihuTopicItem()
+                item_['detail_id'] = id
+                item_['topic_id'] = topic_id
+                item_['crawl_time'] = crawl_time
+                yield item_
+
             headers = self.headers
             headers['x-xsrftoken'] = xsrf
             data = {
@@ -107,12 +124,5 @@ class TopicSpider(scrapy.Spider):
                                      meta={'item': item},
                                      callback=self.parse_content)
 
-            detail_id = re.findall('href=\"/topic/(\d+)\"', ''.join(results['msg']))
-            crawl_time = datetime.utcnow()
-            item = ZhihuTopicItem()
-            item['detail_id'] = detail_id
-            item['topic_id'] = topic_id
-            item['crawl_time'] = crawl_time
-            yield item
         else:
             pass
