@@ -6,7 +6,7 @@
 
 | 爬虫                        | 说明             | 技术栈 | 
 | ------------------------- | -------------- | -------------- | 
-| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#awesome_crawl-) | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis | 
+| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#1%E8%85%BE%E8%AE%AF%E6%96%B0%E9%97%BB%E7%9A%84%E5%85%A8%E7%AB%99%E7%88%AC%E8%99%AB) | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis | 
 | [知乎话题]()                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis | 
 | [微博粉丝]()                   | 采集大V的所有粉丝          | scrapy,mongo,redis | 
 
