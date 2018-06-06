@@ -3,11 +3,11 @@
 # awesome_crawl [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) 
 
 
-| 爬虫                        | 说明             | 技术栈
-| ------------------------- | -------------- | 
-| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#awesome_crawl-)                      | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis
-| [知乎话题]()                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis
-| [微博粉丝]()                   | 采集大V的所有粉丝          | scrapy,mongo,redis
+| 爬虫                        | 说明             | 技术栈 | 
+| ------------------------- | -------------- | -------------- | 
+| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#awesome_crawl-) | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis | 
+| [知乎话题]()                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis | 
+| [微博粉丝]()                   | 采集大V的所有粉丝          | scrapy,mongo,redis | 
 
 
 ### [1、腾讯新闻的全站爬虫](https://github.com/zhangslob/awesome_crawl/tree/master/qq_news/qq_news)
