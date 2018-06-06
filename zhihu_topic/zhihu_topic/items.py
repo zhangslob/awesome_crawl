@@ -30,3 +30,4 @@ class AnswerItem(scrapy.Item):
     type = scrapy.Field()
     id = scrapy.Field()
     questions_count = scrapy.Field()
+    crawl_time = scrapy.Field()

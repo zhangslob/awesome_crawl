@@ -80,6 +80,7 @@ class ParentSpider(RedisSpider):
             data = json.loads(response.text)
             item = AnswerItem()
             item.update(data)
+            item['crawl_time'] = datetime.utcnow()
             yield item
         except Exception as e:
             self.logger.error('get_count {} error : {}'.format(response.url, e))
