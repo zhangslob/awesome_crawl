@@ -18,7 +18,10 @@ class ZhihuTopicPipeline(object):
 
     def process_item(self, item, spider):
         name = type(item).__name__
-        self.db[name].create_index('detail_id', unique=True)
+        if name == 'ZhihuTopicItem':
+            self.db[name].create_index('detail_id', unique=True)
+        else:
+            self.db[name].create_index('id', unique=True)
         try:
             self.db[name].insert(dict(item))
         except errors.DuplicateKeyError:

@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 import scrapy
 from scrapy_redis.spiders import RedisSpider
-from ..items import ZhihuTopicItem
+from ..items import AnswerItem
 # todo API: https://www.zhihu.com/api/v3/topics/19552679/parent \ https://www.zhihu.com/api/v3/topics/19552679/children
 
 
@@ -14,7 +14,8 @@ class ParentSpider(RedisSpider):
     name = 'parent'
     allowed_domains = ['zhihu.com']
 
-    parent_url = 'https://www.zhihu.com/api/v3/topics/{}/children?limit=10&offset={}'
+    children_url = 'https://www.zhihu.com/api/v3/topics/{}/children?limit={}&offset=0'
+    question_url = 'https://www.zhihu.com/api/v3/topics/{}'
 
     mongourl = 'mongodb://127.0.0.1:27017'
     mongodb = name
@@ -42,7 +43,6 @@ class ParentSpider(RedisSpider):
         # 'MONGO_DB': name,
         'ITEM_PIPELINES': {
             'zhihu_topic.pipelines.ZhihuTopicPipeline': 301,
-            'zhihu_topic.pipelines.RedisStartUrlsPipeline': 304,
         },
         'DOWNLOADER_MIDDLEWARES': {
             # 'qq_news.middlewares.ProxyMiddleware': 543,
@@ -55,7 +55,32 @@ class ParentSpider(RedisSpider):
         'referer': "https://www.zhihu.com/topics",
     }
 
+    def make_request_from_data(self, data):
+        url = self.children_url.format(data, 0)
+        return scrapy.Request(url)
+
     def parse(self, response):
-        print(response.text)
-        pass
+        try:
+            data = json.loads(response.text)
+            if data['paging']['is_end'] == 'true':
+                return
+            else:
+                next_url = data['paging']['next']
+                yield scrapy.Request(next_url)
+
+                for i in data['data']:
+                    url = i['url']
+                    yield scrapy.Request(url, callback=self.get_count)
+
+        except Exception as e:
+            self.logger.error('parse {} error : {}'.format(response.url, e))
+
+    def get_count(self, response):
+        try:
+            data = json.loads(response.text)
+            item = AnswerItem()
+            item.update(data)
+            yield item
+        except Exception as e:
+            self.logger.error('get_count {} error : {}'.format(response.url, e))
 
