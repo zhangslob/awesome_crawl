@@ -2,6 +2,14 @@
 
 # awesome_crawl [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) 
 
+
+| 爬虫                        | 说明             | 技术栈
+| ------------------------- | -------------- | 
+| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#awesome_crawl-)                      | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis
+| [知乎话题]()                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis
+| [微博粉丝]()                   | 采集大V的所有粉丝          | scrapy,mongo,redis
+
+
 ### [1、腾讯新闻的全站爬虫](https://github.com/zhangslob/awesome_crawl/tree/master/qq_news/qq_news)
 
 **采集策略**
@@ -59,3 +67,18 @@ print(response.text)
 2. 数据库字段检验
 3. redis中数据为空爬虫自动关闭（目前redis数据被消费完之后爬虫并不会自动关闭，如下图）
 ![](https://i.imgur.com/Sk4GDMA.png)
+
+### [2、知乎所有问题](https://github.com/zhangslob/awesome_crawl/tree/master/zhihu_topic/zhihu_topic)
+
+
+从[话题广场](https://www.zhihu.com/topics)出发，先采集所有知乎的子话题，如
+ 
+
+![](https://i.imgur.com/TC89LlB.png)
+
+解析之后把所有的话题ID保存到redis中，再新建爬虫去采集该话题下所有的问题（这部分还没做完）。
+
+
+### [3、胡歌所有微博粉丝]
+
+todo
