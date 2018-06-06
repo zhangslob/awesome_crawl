@@ -2,12 +2,19 @@
 
 # awesome_crawl [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) 
 
+---
 
-| 爬虫                        | 说明             | 技术栈
-| ------------------------- | -------------- | 
-| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#1%E8%85%BE%E8%AE%AF%E6%96%B0%E9%97%BB%E7%9A%84%E5%85%A8%E7%AB%99%E7%88%AC%E8%99%AB)                      | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis
-| [知乎话题]()                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis
-| [微博粉丝]()                   | 采集大V的所有粉丝          | scrapy,mongo,redis
+| 爬虫                        | 说明             | 技术栈 | 
+| ------------------------- | -------------- | -------------- | 
+| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#awesome_crawl-) | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis | 
+| [知乎话题]()                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis | 
+| [微博粉丝]()                   | 采集大V的所有粉丝          | scrapy,mongo,redis | 
+
+
+
+如果能帮助你，那就最好了
+
+![](http://p8eyj0cpn.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E6%88%AA%E5%9B%BE_%E9%80%89%E6%8B%A9%E5%8C%BA%E5%9F%9F_20180604145649.png)
 
 
 ### [1、腾讯新闻的全站爬虫](https://github.com/zhangslob/awesome_crawl/tree/master/qq_news/qq_news)
