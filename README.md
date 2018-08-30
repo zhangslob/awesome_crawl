@@ -14,7 +14,6 @@
 
 如果能帮助你，那就最好了
 
-![](http://p8eyj0cpn.bkt.clouddn.com/%E6%B7%B1%E5%BA%A6%E6%88%AA%E5%9B%BE_%E9%80%89%E6%8B%A9%E5%8C%BA%E5%9F%9F_20180604145649.png)
 
 
 ### [1、腾讯新闻的全站爬虫](https://github.com/zhangslob/awesome_crawl/tree/master/qq_news/qq_news)
