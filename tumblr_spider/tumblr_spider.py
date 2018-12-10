@@ -7,12 +7,13 @@
 @desc: a spider to download video and image on tumblr
 """
 import os
+import sys
 import logging
 import hashlib
 import requests
 
 from tenacity import *
-from traceback import format_exc
+from concurrent import futures
 from scrapy.selector import Selector
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(filename)s - %(lineno)d - %(levelname)s - %(message)s')
@@ -141,13 +142,21 @@ class Tumblr(object):
 
     def main(self):
         """
-        程序主入口，可以增加更多功能
+        程序主入口
         :return:
         """
         self.keep_download_next_page()
 
 
 if __name__ == '__main__':
-    t = Tumblr('poipon2')
-    t.main()
+    args = sys.argv[1]
+    names_list = []
+    if args:
+        names_list.extend(args.split(','))
+    else:
+        names_list.append('poipon2')
 
+    with futures.ThreadPoolExecutor() as executor:
+        for name in names_list:
+            t = Tumblr(name)
+            executor.submit(t.main())

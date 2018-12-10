@@ -4,11 +4,12 @@
 
 ---
 
-| 爬虫                        | 说明             | 技术栈 | 
-| ------------------------- | -------------- | -------------- | 
-| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#1%E8%85%BE%E8%AE%AF%E6%96%B0%E9%97%BB%E7%9A%84%E5%85%A8%E7%AB%99%E7%88%AC%E8%99%AB) | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis | 
-| [知乎话题](https://github.com/zhangslob/awesome_crawl#2%E7%9F%A5%E4%B9%8E%E6%89%80%E6%9C%89%E9%97%AE%E9%A2%98)                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis | 
-| [微博粉丝]                  | 采集大V的所有粉丝          | scrapy,mongo,redis | 
+| 爬虫                        | 说明             | 技术栈 |
+| ------------------------- | -------------- | -------------- |
+| [腾讯新闻](https://github.com/zhangslob/awesome_crawl#1%E8%85%BE%E8%AE%AF%E6%96%B0%E9%97%BB%E7%9A%84%E5%85%A8%E7%AB%99%E7%88%AC%E8%99%AB) | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis |
+| [知乎话题](https://github.com/zhangslob/awesome_crawl#2%E7%9F%A5%E4%B9%8E%E6%89%80%E6%9C%89%E9%97%AE%E9%A2%98)                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis |
+| [微博粉丝]                  | 采集大V的所有粉丝          | scrapy,mongo,redis |
+| Tumblr爬虫 | 下载指定Tumblr博主的资源 | requests,concurrent |
 
 
 
@@ -78,7 +79,7 @@ print(response.text)
 
 
 从[话题广场](https://www.zhihu.com/topics)出发，先采集所有知乎的子话题，如
- 
+
 
 ![](https://i.imgur.com/TC89LlB.png)
 
@@ -87,4 +88,15 @@ print(response.text)
 
 ### [3、胡歌所有微博粉丝]
 
-todo
+详见 [为了知道胡歌粉丝的男女比率，爬了三百万微博数据](https://zhangslob.github.io/2018/06/07/%E8%83%A1%E6%AD%8C%E7%94%B7%E7%B2%89%E5%A4%9A%E8%BF%98%E6%98%AF%E5%A5%B3%E7%B2%89%E5%A4%9A-%E7%88%AC%E7%88%AC%E5%BE%AE%E5%8D%9A/)
+
+
+
+###[4、Tumblr爬虫]
+
+filepath: `tumblr_spider/tumblr_spider.py`
+
+useage: `python tumblr_spider.py username`
+example: `python tumblr_spider.py user1,use2,use3`
+
+Attention: 你需要可以访问国外的代理，并在`get_proxy()`函数中设置
