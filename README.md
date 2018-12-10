@@ -8,8 +8,8 @@
 | ------------------------- | -------------- | -------------- |
 | [腾讯新闻](https://github.com/zhangslob/awesome_crawl#1%E8%85%BE%E8%AE%AF%E6%96%B0%E9%97%BB%E7%9A%84%E5%85%A8%E7%AB%99%E7%88%AC%E8%99%AB) | 采集所有腾讯新闻的链接和新闻详情        | scrapy,mongo,redis |
 | [知乎话题](https://github.com/zhangslob/awesome_crawl#2%E7%9F%A5%E4%B9%8E%E6%89%80%E6%9C%89%E9%97%AE%E9%A2%98)                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis |
-| [微博粉丝]                  | 采集大V的所有粉丝          | scrapy,mongo,redis |
-| Tumblr爬虫 | 下载指定Tumblr博主的资源 | requests,concurrent |
+| [微博粉丝](https://github.com/zhangslob/awesome_crawl#3%E8%83%A1%E6%AD%8C%E6%89%80%E6%9C%89%E5%BE%AE%E5%8D%9A%E7%B2%89%E4%B8%9D)                | 采集大V的所有粉丝          | scrapy,mongo,redis |
+| [Tumblr爬虫](https://github.com/zhangslob/awesome_crawl#4tumblr%E7%88%AC%E8%99%AB) | 下载指定Tumblr博主的资源 | requests,concurrent |
 
 
 
