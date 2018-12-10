@@ -6,20 +6,24 @@
 @time: 2018/12/06
 @desc: a spider to download video and image on tumblr
 """
-
+import os
+import logging
+import hashlib
 import requests
+
+from tenacity import *
+from traceback import format_exc
 from scrapy.selector import Selector
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(filename)s - %(lineno)d - %(levelname)s - %(message)s')
 
 headers = {
-    'authority': 'poipon2.tumblr.com',
+    'accept': 'text/html, */*; q=0.01',
     'upgrade-insecure-requests': '1',
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 '
                   '(KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-    'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7',
-    'referer': ''
+    'x-requested-with': 'XMLHttpRequest'
 }
 
 
@@ -36,6 +40,8 @@ def get_proxy():
 class Session(object):
     def __init__(self):
         self.session = requests.session()
+        self.session.proxies.update(get_proxy())
+        self.session.headers.update(headers)
 
     def get(self, url, **kwargs):
         retry_times = 0
@@ -53,29 +59,44 @@ class Session(object):
 
 class Tumblr(object):
     def __init__(self, name):
+        # poipon2
         self.name = name
         self.base_url = 'http://{}.tumblr.com/page/{}'
-        self.proxies = get_proxy()
-        self.headers = headers
-        self.headers['referer'] = 'https://{}.tumblr.com/'.format(name)
         self.s = Session()
+        self.s.session.headers.update({'referer': 'https://{}.tumblr.com/'.format(name)})
+        self.page = 1
 
     def keep_download_next_page(self):
         """
         翻页并下载
         :return:
         """
-        page = 1
         while True:
-            try:
-                response = self.s.get(
-                    self.base_url.format(page), headers=self.headers, timeout=10,
-                    proxies=self.proxies)
-                if 'posts-no-posts content' not in response.text:
-                    self._parse_response(response.text)
+            response = self.download_html(self.base_url.format(self.name, self.page))
+            if 'posts-no-posts content' not in response.text:
+                media_url = self._parse_response(response.text)
+                if media_url:
+                    logging.info('crawl user: {} page: {} images: {}'.format(self.name, self.page, len(media_url)))
+                    if media_url:
+                        for url in media_url:
+                            if not self._save_media(url):
+                                self._save_media(url)
 
-            except Exception as e:
-                print(e)
+                self.page += 1
+
+            else:
+                # 当来到最后一页
+                logging.info('user last page: {}'.format(self.base_url.format(self.name, self.page)))
+                return
+
+    @retry(stop=stop_after_attempt(5))
+    def download_html(self, url):
+        """
+        下载网页，重试5次
+        :param url:
+        :return: html
+        """
+        return self.s.get(url, timeout=10, verify=False)
 
     @staticmethod
     def _parse_response(html):
@@ -85,10 +106,48 @@ class Tumblr(object):
         :return:
         """
         s = Selector(text=html)
+        media_url = s.xpath('//div[@class="main"]/article/div/section[1]/div/div/figure/img/@src').extract()
+        media_url.extend(s.xpath('//div[@class="main"]/article/div/section[1]/div/div/figure/video/source/@src').extract())
+        return media_url if media_url else None
 
-    def _download_media(self, url):
+    def _save_media(self, url):
         """
-        下载并保存
+        下载并保存媒体
         :param url:
         :return:
         """
+        content = self.download_html(url).content
+        file_folder = '{}/{}'.format(os.getcwd(), self.name)
+
+        # 先创建文件夹
+        if not os.path.exists(file_folder):
+            os.makedirs(file_folder)
+            # '/Users/xxx/awesome_crawl/tumblr_spider/poipon2
+
+        if url[-3:] == 'mp4':
+            file_path = '{}/{}.{}'.format(file_folder, hashlib.md5(content).hexdigest(), 'mp4')
+        else:
+            file_path = '{}/{}.{}'.format(file_folder, hashlib.md5(content).hexdigest(), 'jpg')
+
+        if not os.path.exists(file_path):
+            with open(file_path, 'wb') as f:
+                f.write(content)
+                f.close()
+            logging.info('save image path: {}'.format(file_path))
+            return True
+        else:
+            logging.debug("file already exists  with url: {}".format(url))
+            return False
+
+    def main(self):
+        """
+        程序主入口，可以增加更多功能
+        :return:
+        """
+        self.keep_download_next_page()
+
+
+if __name__ == '__main__':
+    t = Tumblr('poipon2')
+    t.main()
+
