@@ -159,7 +159,8 @@ class BaseWebsocket(object):
 
 
 if __name__ == '__main__':
-    room_list = ['208114', '4537144', '606118']
+    # '208114',
+    room_list = ['4537144']
     for i in room_list:
         w = BaseWebsocket(i)
         t = threading.Thread(target=w.main)
