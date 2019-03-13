@@ -13,7 +13,10 @@
 
 
 
-如果能帮助你，那就最好了
+如果能帮助你，那就最好了。欢迎关注公众号：
+
+![](https://ws4.sinaimg.cn/large/006tKfTcly1g0zrwffcfbj309k09kjrc.jpg)
+
 
 
 
