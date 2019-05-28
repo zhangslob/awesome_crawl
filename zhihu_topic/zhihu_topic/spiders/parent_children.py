@@ -22,7 +22,7 @@ class ParentSpider(RedisSpider):
 
     custom_settings = {
         'CONCURRENT_REQUESTS': 64,
-        'DOWNLOAD_DELAY': 1,
+        'DOWNLOAD_DELAY': 0,
         'COOKIES_ENABLED': False,
         'LOG_LEVEL': 'DEBUG',
         'RETRY_TIMES': 15,
@@ -69,7 +69,7 @@ class ParentSpider(RedisSpider):
                 next_url = data['paging']['next']
                 yield scrapy.Request(next_url)
 
-                for i in data['data']:
+                for i in data['data']gi:
                     url = i['url']
                     yield scrapy.Request(url, callback=self.get_count)
 
