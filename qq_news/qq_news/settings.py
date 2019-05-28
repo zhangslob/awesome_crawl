@@ -63,9 +63,12 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'qq_news.pipelines.QqNewsPipeline': 300,
-#}
+REDIS_HOST='172.20.10.4'
+REDIS_PORT=6379
+# REDIS_DB=0
+# ITEM_PIPELINES = {
+#     'qq_news.pipelines.RedisStartUrlsPipeline': 300,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

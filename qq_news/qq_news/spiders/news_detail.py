@@ -21,8 +21,7 @@ class DetailSpider(RedisSpider):
     custom_settings = {
         'CONCURRENT_REQUESTS': 64,
         'DOWNLOAD_DELAY': 0,
-        'COOKIES_ENABLED': False,
-        'LOG_LEVEL': 'INFO',
+        'LOG_LEVEL': 'DEBUG',
         'RETRY_TIMES': 15,
         'DEFAULT_REQUEST_HEADERS': {
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -30,7 +29,7 @@ class DetailSpider(RedisSpider):
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'cache-control': 'max-age=0',
         },
-        'MONGO_URI': 'localhost:27017',
+        'MONGO_URI': '172.20.10.4:27017',
         'MONGO_DATABASE': 'awesome_crawl',
         'REDIS_START_URLS_AS_SET': True,
         'ITEM_PIPELINES': {
@@ -55,13 +54,14 @@ class DetailSpider(RedisSpider):
         try:
             if response.url == 'https://xw.qq.com/404.html':
                 return
-
             item = NewsDetailItem()
-            data = ''.join(re.findall(r'globalConfig\s=\s(\{.*?\});', response.text, re.S))
-            json_data = demjson.decode(data)
-
-            for k, v in zip(list(json_data.keys()), list(json_data.values())):
-                item[k] = v
+            data = re.search(r'globalConfig\s=\s(\{(.|\n)+\});(.|\n)+</script>', response.text, re.S)
+            content=data.group(1).replace('.politicalOption','')
+            json_data = demjson.decode(content)
+            for k, v in zip(json_data.keys(), json_data.values()):
+                if k!='from':
+                    item[k] = v
+            self.logger.info('title:{}'.format(item['title']))
             yield item
         except Exception as e:
             self.logger.error('parse_content error {}, {}, {}'.format(e, response.url, response.text))

@@ -10,7 +10,7 @@ import scrapy
 
 class NewsUrlItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
+    # name = scrapy.Fiel    d()
     url = scrapy.Field()
 
 
@@ -26,6 +26,7 @@ class NewsDetailItem(scrapy.Item):
     contents = scrapy.Field()
     ext_data = scrapy.Field()
     fisoriginal = scrapy.Field()
+    #from=scrapy.Field()
     id = scrapy.Field()
     img = scrapy.Field()
     isOm = scrapy.Field()
@@ -36,5 +37,5 @@ class NewsDetailItem(scrapy.Item):
     url = scrapy.Field()
     plink = scrapy.Field()
     mid = scrapy.Field()
-    linkurl = scrapy.Field()
-    sitename = scrapy.Field()
+    politicalOption=scrapy.Field()
+    content=scrapy.Field()

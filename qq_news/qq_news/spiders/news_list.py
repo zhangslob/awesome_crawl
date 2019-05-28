@@ -30,7 +30,7 @@ class ListSpider(scrapy.Spider):
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'cache-control': 'max-age=0',
         },
-        'REDIS_HOST': '127.0.0.1',
+        'REDIS_HOST': '172.20.10.4',
         'REDIS_PORT': '6379',
         'REDIS_DB': '0',
         'ITEM_PIPELINES': {
@@ -47,11 +47,7 @@ class ListSpider(scrapy.Spider):
         :param response:
         :return: detail response
         """
-        urls_list = []
-        for i in response.xpath('//*[@id="wrapCon"]/div/div[1]/div[2]/dl'):
-            urls = i.xpath('dd/ul/li/strong/a/@href').extract() or i.xpath('dd/ul/li/a/@href').extract()
-            urls_list.extend(i.strip() for i in urls)
-        for url in urls_list:
+        for url in response.xpath(r'//div[@class="bd"]//dl[1]/dd/ul/li/a/@href').extract():
             yield scrapy.Request(url, callback=self.parse_url)
 
     def parse_url(self, response):
@@ -60,7 +56,7 @@ class ListSpider(scrapy.Spider):
         :param response: http://news.qq.com/
         :return:
         """
-        pat = re.compile('http://new.qq.com/.*/.*.html')
+        pat = re.compile(r'http://new.qq.com/\S+\.html')
         detail_urls = pat.findall(response.text)
         for url in detail_urls:
             item = NewsUrlItem()
