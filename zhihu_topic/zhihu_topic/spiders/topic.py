@@ -19,7 +19,7 @@ class TopicSpider(scrapy.Spider):
         }
     offset = 0
 
-    mongourl = 'mongodb://127.0.0.1:27017'
+    mongourl = '172.20.10.4:27017'
     mongodb = name
 
     custom_settings = {
@@ -27,7 +27,7 @@ class TopicSpider(scrapy.Spider):
         'CONCURRENT_REQUESTS': 64,
         'DOWNLOAD_DELAY': 0,
         'COOKIES_ENABLED': False,
-        'LOG_LEVEL': 'INFO',
+        'LOG_LEVEL': 'DEBUG',
         'RETRY_TIMES': 15,
         'USER_AGENT': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/55.0.2883.75 Safari/537.36 Maxthon/5.1.3.2000",
@@ -38,8 +38,8 @@ class TopicSpider(scrapy.Spider):
             'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)"
                           " Chrome/55.0.2883.75 Safari/537.36 Maxthon/5.1.3.2000"
     },
-        'REDIS_HOST': '127.0.0.1',
-        'REDIS_PORT': '6379',
+        'REDIS_HOST': '172.20.10.4',
+        'REDIS_PORT': 6379,
         'REDIS_DB': '0',
         # 'MONGO_URL': 'mongodb://127.0.0.1:27017',
         # 'MONGO_DB': name,
