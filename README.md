@@ -10,6 +10,7 @@
 | [知乎话题](https://github.com/zhangslob/awesome_crawl#2%E7%9F%A5%E4%B9%8E%E6%89%80%E6%9C%89%E9%97%AE%E9%A2%98)                       | 从话题广场出发，先采集子话题ID，再采集ID下所有问题          | scrapy,mongo,redis |
 | [微博粉丝](https://github.com/zhangslob/awesome_crawl#3%E8%83%A1%E6%AD%8C%E6%89%80%E6%9C%89%E5%BE%AE%E5%8D%9A%E7%B2%89%E4%B8%9D)                | 采集大V的所有粉丝          | scrapy,mongo,redis |
 | [Tumblr爬虫](https://github.com/zhangslob/awesome_crawl#4tumblr%E7%88%AC%E8%99%AB) | 下载指定Tumblr博主的资源 | requests,concurrent |
+| [妹子图爬虫](https://github.com/zhangslob/awesome_crawl#4tumblr%E7%88%AC%E8%99%AB) | 下载妹子图 | goroutine,goquery |
 
 
 
@@ -103,3 +104,8 @@ useage: `python tumblr_spider.py username`
 example: `python tumblr_spider.py user1,use2,use3`
 
 Attention: 你需要可以访问国外的代理，并在`get_proxy()`函数中设置
+
+### [5、妹子图爬虫]
+
+使用`go`开发的爬虫，可以下载妹子图至本地，效果如下：
+![](https://i.loli.net/2019/06/06/5cf8e13ebce7b80963.png)
