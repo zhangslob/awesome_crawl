@@ -90,13 +90,13 @@ print(response.text)
 解析之后把所有的话题ID保存到redis中，再新建爬虫去采集该话题下所有的问题（这部分基本完工，但是还没测试过）。
 
 
-### [3、胡歌所有微博粉丝]
+### [3、胡歌所有微博粉丝](https://github.com/zhangslob/awesome_crawl/tree/master/weibo_fans)
 
 详见 [为了知道胡歌粉丝的男女比率，爬了三百万微博数据](https://zhangslob.github.io/2018/06/07/%E8%83%A1%E6%AD%8C%E7%94%B7%E7%B2%89%E5%A4%9A%E8%BF%98%E6%98%AF%E5%A5%B3%E7%B2%89%E5%A4%9A-%E7%88%AC%E7%88%AC%E5%BE%AE%E5%8D%9A/)
 
 
 
-### [4、Tumblr爬虫]
+### [4、Tumblr爬虫](https://github.com/zhangslob/awesome_crawl/tree/master/tumblr_spider)
 
 filepath: `tumblr_spider/tumblr_spider.py`
 
@@ -105,7 +105,7 @@ example: `python tumblr_spider.py user1,use2,use3`
 
 Attention: 你需要可以访问国外的代理，并在`get_proxy()`函数中设置
 
-### [5、妹子图爬虫]
+### [5、妹子图爬虫](https://github.com/zhangslob/awesome_crawl/tree/master/mzitu)
 
 使用`go`开发的爬虫，可以下载妹子图至本地，效果如下：
 
