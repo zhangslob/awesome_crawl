@@ -11,6 +11,7 @@
 | [微博粉丝](https://github.com/zhangslob/awesome_crawl#3%E8%83%A1%E6%AD%8C%E6%89%80%E6%9C%89%E5%BE%AE%E5%8D%9A%E7%B2%89%E4%B8%9D)                | 采集大V的所有粉丝          | scrapy,mongo,redis |
 | [Tumblr爬虫](https://github.com/zhangslob/awesome_crawl#4tumblr%E7%88%AC%E8%99%AB) | 下载指定Tumblr博主的资源 | requests,concurrent |
 | [妹子图爬虫](https://github.com/zhangslob/awesome_crawl#5%E5%A6%B9%E5%AD%90%E5%9B%BE%E7%88%AC%E8%99%AB) | go语言下载妹子图 | goroutine,goquery |
+| [全站爬虫](./kan_sogou/README.md) | 分布式全站爬虫——以"搜狗电视剧"为例 | scrapy,redis |
 
 
 
