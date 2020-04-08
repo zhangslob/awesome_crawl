@@ -11,11 +11,11 @@
 | [微博粉丝](./weibo_fans/README.md)                | 采集大V的所有粉丝          | scrapy,mongo,redis |
 | [Tumblr爬虫](./tumblr_spider/README.md) | 下载指定Tumblr博主的资源 | requests,concurrent |
 | [妹子图爬虫](./mzitu/README.md) | go语言下载妹子图 | goroutine,goquery |
-| [全站爬虫](./kan_sogou/README.md) | 分布式全站爬虫——以"搜狗电视剧"为例 | scrapy,redis |
+| [全站爬虫](./kan_sogou/README.md) | 分布式全站爬虫——以"搜狗电视剧"为例 | scrapy,redis，分布式 |
 
 
 
 如果能帮助你，那就最好了。欢迎关注公众号：
 
-![](https://ws4.sinaimg.cn/large/006tKfTcly1g0zrwffcfbj309k09kjrc.jpg)
+![](./img/wx.jpg)
 
