@@ -63,6 +63,7 @@ class UidUtils(object):
         """
         self.uid = uid
         while True:
+            # TODO: Use redis pipeline execution.
             if self.watch_uid_num(spider):
                 uid_list = next(self.gen_uid(spider))
                 redis_key = '{}:start_urls'.format(spider)

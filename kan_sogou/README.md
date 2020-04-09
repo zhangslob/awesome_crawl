@@ -61,6 +61,60 @@ Sitemap: http://kan.sogou.com/sitemap/sitemap.xml
 
 但是有些网站，比如优酷的：`https://v.youku.com/v_show/id_XNDU4OTM3NzM0NA==.html`，id明显就是混淆过的，想要全量抓取只能通过分类接口去抓。这个有时间再聊聊。
 
+## 线程安全
+
+我们想想，这样设计会不会有线程安全？
+
+先看看slave端，对redis的操作只有一个就是获取redis里的id，我们看看代码，`scrapy_redis.spiders.RedisMixin.next_requests`
+
+```python
+    def next_requests(self):
+        """Returns a request to be scheduled or none."""
+        use_set = self.settings.getbool('REDIS_START_URLS_AS_SET', defaults.START_URLS_AS_SET)
+        fetch_one = self.server.spop if use_set else self.server.lpop
+        # XXX: Do we need to use a timeout here?
+        found = 0
+        # TODO: Use redis pipeline execution.
+        while found < self.redis_batch_size:
+            data = fetch_one(self.redis_key)
+            if not data:
+                # Queue empty.
+                break
+            req = self.make_request_from_data(data)
+            if req:
+                yield req
+                found += 1
+            else:
+                self.logger.debug("Request not made from data: %r", data)
+```
+
+scrapy-redis使用使用list结构，所以这里我们用到的是`lpop`命令，多次去redis中获取request，直到`found = self.redis_batch_size`，每次从redis中获取request的数量如果没有设置，默认就是settings中的`CONCURRENT_REQUESTS`，一般就是16。
+
+```python
+        if self.redis_batch_size is None:
+            # TODO: Deprecate this setting (REDIS_START_URLS_BATCH_SIZE).
+            self.redis_batch_size = settings.getint(
+                'REDIS_START_URLS_BATCH_SIZE',
+                settings.getint('CONCURRENT_REQUESTS'),
+            )
+``` 
+
+每次从redis中获取到request后，会直接调用`self.make_request_from_data(data)`方法。作者在注释里也说到了这里的两个改进方法：
+1. Use timeout。redis的`lpop`是阻塞操作，所以理论上需要加上超时
+2. Use redis pipeline。如果不了解的可以看看文档，[Redis 管道（Pipelining）](http://www.redis.cn/topics/pipelining.html)，
+
+> 有心可以去提个pr，以后就可以吹牛说自己是scrapy-redis的contributors了，有人已经行动了，[read start_urls use redis pipeline](https://github.com/rmax/scrapy-redis/pull/159)
+
+因为`lpop`是原子操作，任何时候只会有单一线程从redis中拿到request，所以在获取request这一步是线程安全的。对这块不熟悉的可以阅读[Redis 和 I/O 多路复用](https://zhangslob.github.io/2020/03/24/Redis-%E5%92%8C-I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/)
+
+再看看master端，有两个redis操作，
+1. 查询spider种子数量，使用`llen`
+2. 如果数量小于预期，生成任务ID，使用`lpush`插入数据
+
+线程安全一般出现多线程之间的共享变量，这个场景下共享变量是什么，redis中的request列表吗，我仔细想了下，因为我们对redis的操作都保证原子性，并且插入的id保证不重复，所以不会出现问题。可以改进的地方，就是对master端使用redis pipeline操作。
+
+欢迎交流想法。
+
 ## 实际应用
 
 这两天看到一个新闻：
